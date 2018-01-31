@@ -10,5 +10,9 @@ func init() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello, world!2")
+	fmt.Fprint(w, getMessage())
+}
+
+func getMessage() string{
+	return "Hello, world!"
 }
