@@ -28,4 +28,4 @@ jobs:
        unzip go_appengine_sdk_linux_amd64-1.9.58.zip -d $HOME
    - run:
       name: Run Server Unit Tests.
-      command: echo "It worked!"
+      command: make test
