@@ -19,9 +19,3 @@ serve: ## ローカルサーバ実行
 
 deploy: ## デプロイ
 	goapp deploy -application ${project_id} -version ${version} app
-
-deploySA: ## サービスアカウントでデプロイ
-##	echo ${dev_service_account_key} > /tmp/secret.json
-##	gcloud auth activate-service-account ${dev_service_account_client_email} --key-file /tmp/secret.json
-	gcloud auth activate-service-account ${dev_service_account_client_email} --key-file ./key.json
-	appcfg.py --application ${project_id} --version=${version} --oauth2_access_token `gcloud auth print-access-token` update app/app.yaml
