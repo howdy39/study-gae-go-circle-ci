@@ -14,5 +14,5 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getMessage() string{
-	return "Hello, world!NGにする"
+	return "Hello, world!"
 }
