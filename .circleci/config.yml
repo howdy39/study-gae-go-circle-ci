@@ -13,4 +13,10 @@ jobs:
       command: make test
    - run:
       name: Deploy to GAE.
-      command: ./scripts/deploy-ci.sh
+      command: |
+       if [ ${CIRCLE_BRANCH} = "demo" ]; then
+         ./scripts/deploy-ci.sh
+       else
+         echo "${CIRCLE_BRANCH} isn't deploy branch."
+       fi
+
