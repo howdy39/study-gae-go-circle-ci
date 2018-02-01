@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo $SERVICE_ACCOUNT_KEY > /tmp/secret.json
 gcloud auth activate-service-account $SERVICE_ACCOUNT_CLIENT_EMAIL --key-file /tmp/secret.json
