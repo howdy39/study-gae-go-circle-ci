@@ -1,4 +1,5 @@
 # study-gae-go-circle-ci
+[![CircleCI](https://circleci.com/gh/howdy39/study-gae-go-circle-ci.svg?style=svg)](https://circleci.com/gh/howdy39/study-gae-go-circle-ci)
 
 ## ローカル実行
 ### コマンド
