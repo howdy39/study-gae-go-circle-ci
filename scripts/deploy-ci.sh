@@ -3,7 +3,7 @@
 echo "Show environment variables:"
 echo "  PROJECT_ID: $PROJECT_ID"
 echo "  SERVICE_ACCOUNT_CLIENT_EMAIL: $SERVICE_ACCOUNT_CLIENT_EMAIL"
-echo -n "  SERVICE_ACCOUNT_KEY: $SERVICE_ACCOUNT_KEY" | head -c 100 && echo ""
+echo "  SERVICE_ACCOUNT_KEY: $SERVICE_ACCOUNT_KEY" | head -c 100 && echo ""
 echo "  CIRCLE_BRANCH: $CIRCLE_BRANCH"
 echo "----------------------"
 
