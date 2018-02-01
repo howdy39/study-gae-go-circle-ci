@@ -1,10 +1,11 @@
 #!/bin/bash
 
-echo "PROJECT_ID: $PROJECT_ID"
-echo "SERVICE_ACCOUNT_CLIENT_EMAIL: $SERVICE_ACCOUNT_CLIENT_EMAIL"
-echo "SERVICE_ACCOUNT_KEY: $SERVICE_ACCOUNT_KEY" | head -c 100
+echo "Show environment variables:"
+echo "  PROJECT_ID: $PROJECT_ID"
+echo "  SERVICE_ACCOUNT_CLIENT_EMAIL: $SERVICE_ACCOUNT_CLIENT_EMAIL"
+echo "  SERVICE_ACCOUNT_KEY: $SERVICE_ACCOUNT_KEY" | head -c 100
+echo "  CIRCLE_BRANCH: $CIRCLE_BRANCH"
 echo "----------------------"
-echo "CIRCLE_BRANCH: $CIRCLE_BRANCH"
 
 echo $SERVICE_ACCOUNT_KEY > /tmp/secret.json
 gcloud auth activate-service-account $SERVICE_ACCOUNT_CLIENT_EMAIL --key-file /tmp/secret.json
