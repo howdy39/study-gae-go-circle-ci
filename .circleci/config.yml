@@ -24,8 +24,10 @@ jobs:
       - run:
           name: Vendoring.
           command: |
-            go get -u github.com/golang/dep/cmd/dep
-            dep ensure -v
+            if [ ! -e /go/src/github.com/howdy39/study-gae-go-circle-ci/vendor ]; then
+                go get -u github.com/golang/dep/cmd/dep
+                dep ensure -v
+            fi
       - save_cache:
           name: Saving Cache - vendor
           <<: *go_vendoring_cache_params
