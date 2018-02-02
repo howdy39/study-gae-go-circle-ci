@@ -6,13 +6,18 @@ references:
       - image: mercari/appengine-go
     environment:
      TZ: /usr/share/zoneinfo/Asia/Tokyo
-    working_directory: /home/circleci/go/src/project
+    working_directory: /go/src/github.com/howdy39/study-gae-go-circle-ci
 
 jobs:
   build:
     <<: *container_config
     steps:
       - checkout
+      - run:
+          name: Vendoring.
+          command: |
+            go get -u github.com/golang/dep/cmd/dep
+            dep ensure -v
       - run:
           name: Run Server Unit Tests.
           command: make test
