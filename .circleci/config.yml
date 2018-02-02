@@ -33,7 +33,14 @@ jobs:
           command: |
             echo "Node $(node -v)"
             echo "Npm $(npm -v)"
-      - run: echo "A first hello"
+      - run:
+          name: Set up to Angular.
+          command: npm install --no-save
+          working_directory: ./client
+      - run:
+          name: Run Angular Build.
+          command: npm run build
+          working_directory: ./client
       - run: mkdir -p attach_workspace
       - run: echo "Trying out workspaces" > attach_workspace/echo-output
       - run: cp -rp client/src attach_workspace/src
@@ -42,6 +49,7 @@ jobs:
           paths:
             - echo-output
             - src
+            - dist
       - run: cat attach_workspace/echo-output
       - run: ls -la attach_workspace
 
