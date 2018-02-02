@@ -5,19 +5,30 @@ references:
     docker:
       - image: mercari/appengine-go
     environment:
-     TZ: /usr/share/zoneinfo/Asia/Tokyo
+      TZ: /usr/share/zoneinfo/Asia/Tokyo
     working_directory: /go/src/github.com/howdy39/study-gae-go-circle-ci
+
+  go_vendoring_cache_params: &go_vendoring_cache_params
+    key: go-vendoring-{{ .Branch }}-{{ checksum "Gopkg.lock" }}
+    paths:
+      - /go/src/github.com/howdy39/study-gae-go-circle-ci/vendor
 
 jobs:
   build:
     <<: *container_config
     steps:
       - checkout
+      - restore_cache:
+          name: Restore Cache - vendor
+          <<: *go_vendoring_cache_params
       - run:
           name: Vendoring.
           command: |
             go get -u github.com/golang/dep/cmd/dep
             dep ensure -v
+      - save_cache:
+          name: Saving Cache - vendor
+          <<: *go_vendoring_cache_params
       - run:
           name: Run Server Unit Tests.
           command: make test
