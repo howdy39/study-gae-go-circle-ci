@@ -41,6 +41,7 @@ jobs:
           root: my_workspace
           paths:
             - echo-output
+            - src
       - run: cat my_workspace/echo-output
       - run: ls -la my_workspace
 
