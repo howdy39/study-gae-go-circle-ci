@@ -2,15 +2,18 @@ package src
 
 import (
 	"net/http"
-	"fmt"
+	"github.com/gin-gonic/gin"
 )
 
 func init() {
-	http.HandleFunc("/hello", handler)
+	r := gin.Default()
+	r.GET("/hello", helloHandler)
+	http.Handle("/", r)
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, getMessage())
+
+func helloHandler(g *gin.Context) {
+	g.String(http.StatusOK, getMessage())
 }
 
 func getMessage() string{
