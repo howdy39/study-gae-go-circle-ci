@@ -34,16 +34,16 @@ jobs:
             echo "Node $(node -v)"
             echo "Npm $(npm -v)"
       - run: echo "A first hello"
-      - run: mkdir -p my_workspace
-      - run: echo "Trying out workspaces" > my_workspace/echo-output
-      - run: cp -rp client/src my_workspace/src
+      - run: mkdir -p attach_workspace
+      - run: echo "Trying out workspaces" > attach_workspace/echo-output
+      - run: cp -rp client/src attach_workspace/src
       - persist_to_workspace:
-          root: my_workspace
+          root: attach_workspace
           paths:
             - echo-output
             - src
-      - run: cat my_workspace/echo-output
-      - run: ls -la my_workspace
+      - run: cat attach_workspace/echo-output
+      - run: ls -la attach_workspace
 
 
   build_server:
@@ -51,14 +51,14 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: my_workspace
+          at: attach_workspace
       - run: |
-          if [[ $(cat my_workspace/echo-output) == "Trying out workspaces" ]]; then
+          if [[ $(cat attach_workspace/echo-output) == "Trying out workspaces" ]]; then
             echo "It worked!";
           else
             echo "Nope!"; exit 1
           fi
-      - run: ls -la my_workspace
+      - run: ls -la attach_workspace/src
 
 workflows:
   version: 2
