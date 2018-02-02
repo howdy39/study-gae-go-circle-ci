@@ -36,11 +36,14 @@ jobs:
       - run: echo "A first hello"
       - run: mkdir -p my_workspace
       - run: echo "Trying out workspaces" > my_workspace/echo-output
+      - run: cp -rp client/src my_workspace/src
       - persist_to_workspace:
           root: my_workspace
           paths:
             - echo-output
       - run: cat my_workspace/echo-output
+      - run: ls -la my_workspace
+
 
   build_server:
     <<: *container_config
@@ -54,6 +57,7 @@ jobs:
           else
             echo "Nope!"; exit 1
           fi
+      - run: ls -la my_workspace
 
 workflows:
   version: 2
