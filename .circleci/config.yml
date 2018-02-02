@@ -1,22 +1,21 @@
 version: 2
 jobs:
- build:
-  docker:
-   - image: mercari/appengine-go
-  environment:
-   TZ: /usr/share/zoneinfo/Asia/Tokyo
-  working_directory: /home/circleci/go/src/project
-  steps:
-   - checkout
-   - run:
-      name: Run Server Unit Tests.
-      command: make test
-   - run:
-      name: Deploy to GAE.
-      command: |
-       if [ ${CIRCLE_BRANCH} = "demo" ]; then
-         ./scripts/deploy-ci.sh
-       else
-         echo "${CIRCLE_BRANCH} isn't deploy branch."
-       fi
-
+  build:
+    docker:
+      - image: mercari/appengine-go
+    environment:
+     TZ: /usr/share/zoneinfo/Asia/Tokyo
+    working_directory: /home/circleci/go/src/project
+    steps:
+      - checkout
+      - run:
+          name: Run Server Unit Tests.
+          command: make test
+      - run:
+          name: Deploy to GAE.
+          command: |
+            if [ ${CIRCLE_BRANCH} = "demo" ]; then
+              ./scripts/deploy-ci.sh
+            else
+              echo "${CIRCLE_BRANCH} isn't deploy branch."
+            fi
