@@ -1,6 +1,16 @@
 version: 2
 
 references:
+  front_container_config: &front_container_config
+    docker:
+      - image: circleci/node
+    working_directory: /home/circleci/project
+
+  node_modules_cache_params: &node_modules_cache_params
+    key: node_modules-{{ .Branch }}-{{ checksum "package-lock.json" }}
+    paths:
+      - node_modules
+
   container_config: &container_config
     docker:
       - image: mercari/appengine-go
@@ -15,30 +25,41 @@ references:
 
 jobs:
   build:
+    <<: *front_container_config
+    steps:
+      - checkout
+      - run:
+          name: System information
+          command: |
+            echo "Node $(node -v)"
+            echo "Npm $(npm -v)"
+      - run: echo "A first hello"
+      - run: mkdir -p my_workspace
+      - run: echo "Trying out workspaces" > my_workspace/echo-output
+      - persist_to_workspace:
+          root: my_workspace
+          paths:
+            - echo-output
+      - run: cat my_workspace/echo-output
+
+  build_server:
     <<: *container_config
     steps:
       - checkout
-      - restore_cache:
-          name: Restore Cache - vendor
-          <<: *go_vendoring_cache_params
-      - run:
-          name: Vendoring.
-          command: |
-            if [ ! -e /go/src/github.com/howdy39/study-gae-go-circle-ci/vendor ]; then
-                go get -u github.com/golang/dep/cmd/dep
-                dep ensure -v
-            fi
-      - save_cache:
-          name: Saving Cache - vendor
-          <<: *go_vendoring_cache_params
-      - run:
-          name: Run Server Unit Tests.
-          command: make test
-      - run:
-          name: Deploy to GAE.
-          command: |
-            if [ ${CIRCLE_BRANCH} = "demo" ]; then
-              ./scripts/deploy-ci.sh
-            else
-              echo "${CIRCLE_BRANCH} isn't deploy branch."
-            fi
+      - attach_workspace:
+          at: my_workspace
+      - run: |
+          if [[ $(cat my_workspace/echo-output) == "Trying out workspaces" ]]; then
+            echo "It worked!";
+          else
+            echo "Nope!"; exit 1
+          fi
+
+workflows:
+  version: 2
+  one_and_two:
+    jobs:
+      - build
+      - build_server:
+          requires:
+            - build
