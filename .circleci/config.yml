@@ -65,12 +65,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: attach_workspace
-      - run: |
-          if [[ $(cat attach_workspace/echo-output) == "Trying out workspaces" ]]; then
-            echo "It worked!";
-          else
-            echo "Nope!"; exit 1
-          fi
       - run: ls -la attach_workspace/src
 
 workflows:
