@@ -14,6 +14,9 @@ help: ## Print this help
 test: ## テスト
 	go test ./api/src...
 
+build_client: ## クライアントをビルド
+	cd client && npm run build && cd ../ && cp -rp client/dist api/src/templates
+
 serve: ## ローカルサーバ実行
 	goapp serve api/src
 
