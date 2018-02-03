@@ -7,7 +7,7 @@ references:
     working_directory: /home/circleci/project
 
   node_modules_cache_params: &node_modules_cache_params
-    key: node_modules-{{ .Branch }}-{{ checksum "package-lock.json" }}
+    key: node_modules-{{ .Branch }}-{{ checksum "./client/package-lock.json" }}
     paths:
       - node_modules
 
@@ -36,7 +36,6 @@ jobs:
       - restore_cache:
           name: Restore Cache - node_modules
           <<: *node_modules_cache_params
-          working_directory: ./client
       - run:
           name: Set up to Angular.
           command: npm install --no-save
@@ -44,7 +43,6 @@ jobs:
       - save_cache:
           name: Saving Cache - node_modules
           <<: *node_modules_cache_params
-          working_directory: ./client
       - run:
           name: Run Angular Build.
           command: npm run build
