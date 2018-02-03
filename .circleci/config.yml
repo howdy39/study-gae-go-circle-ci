@@ -65,7 +65,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: attach_workspace
-      - run: ls -la attach_workspace/src
+      - run: ls -la attach_workspace/dist
 
 workflows:
   version: 2
