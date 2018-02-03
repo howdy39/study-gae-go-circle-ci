@@ -29,7 +29,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Show system information
+          name: Show system information.
           command: |
             echo "Node $(node -v)"
             echo "Npm $(npm -v)"
@@ -63,11 +63,10 @@ jobs:
     <<: *server_container_config
     steps:
       - checkout
-      - attach_workspace:
-          at: attach_workspace
-      - run: ls -la attach_workspace/dist
-      - run: cp -rp attach_workspace/dist api/src/templates
-      - run: ls -la api/src/templates
+      - run:
+          name: Show system information.
+          command: |
+            echo "Go $(go version)"
       - restore_cache:
           name: Restore Cache.
           <<: *go_vendoring_cache_params
@@ -84,6 +83,16 @@ jobs:
       - run:
           name: Run Server Unit Tests.
           command: make test
+
+  deploy:
+    <<: *server_container_config
+    steps:
+      - checkout
+      - attach_workspace:
+          at: attach_workspace
+      - run: ls -la attach_workspace/dist
+      - run: cp -rp attach_workspace/dist api/src/templates
+      - run: ls -la api/src/templates
       - run:
           name: Deploy to GAE.
           command: |
@@ -98,6 +107,8 @@ workflows:
   build:
     jobs:
       - front_build
-      - server_build:
+      - server_build
+      - deploy:
           requires:
             - front_build
+            - server_build
