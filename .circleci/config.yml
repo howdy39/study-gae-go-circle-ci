@@ -24,7 +24,7 @@ references:
       - /go/src/github.com/howdy39/study-gae-go-circle-ci/vendor
 
 jobs:
-  build:
+  front_build:
     <<: *front_container_config
     steps:
       - checkout
@@ -55,7 +55,7 @@ jobs:
       - run: ls -la attach_workspace
 
 
-  build_server:
+  server_build:
     <<: *container_config
     steps:
       - checkout
@@ -71,9 +71,9 @@ jobs:
 
 workflows:
   version: 2
-  one_and_two:
+  build:
     jobs:
-      - build
-      - build_server:
+      - front_build
+      - server_build:
           requires:
-            - build
+            - front_build
