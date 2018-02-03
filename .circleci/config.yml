@@ -47,17 +47,15 @@ jobs:
           name: Run Angular Build.
           command: npm run build
           working_directory: ./client
-      - run: mkdir -p attach_workspace
-      - run: echo "Trying out workspaces" > attach_workspace/echo-output
-      - run: cp -rp client/src attach_workspace/src
-      - run: cp -rp client/dist attach_workspace/dist
+      - run:
+          name: Move dist directory.
+          command: |
+            mkdir -p attach_workspace
+            cp -rp client/dist attach_workspace/dist
       - persist_to_workspace:
           root: attach_workspace
           paths:
-            - echo-output
-            - src
             - dist
-      - run: cat attach_workspace/echo-output
       - run: ls -la attach_workspace
 
 
