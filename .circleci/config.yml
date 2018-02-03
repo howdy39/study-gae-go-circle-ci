@@ -67,7 +67,7 @@ jobs:
           at: attach_workspace
       - run: ls -la attach_workspace/dist
       - run: cp -rp attach_workspace/dist api/src/templates
-      - run: ls -la attach_workspace/templates
+      - run: ls -la api/src/templates
       - restore_cache:
           name: Restore Cache.
           <<: *go_vendoring_cache_params
