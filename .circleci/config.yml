@@ -29,19 +29,19 @@ jobs:
     steps:
       - checkout
       - run:
-          name: System information
+          name: Show system information
           command: |
             echo "Node $(node -v)"
             echo "Npm $(npm -v)"
       - restore_cache:
-          name: Restore Cache - node_modules
+          name: Restore Cache.
           <<: *node_modules_cache_params
       - run:
           name: Set up to Angular.
           command: npm install --no-save
           working_directory: ./client
       - save_cache:
-          name: Saving Cache - node_modules
+          name: Saving Cache.
           <<: *node_modules_cache_params
       - run:
           name: Run Angular Build.
@@ -66,6 +66,32 @@ jobs:
       - attach_workspace:
           at: attach_workspace
       - run: ls -la attach_workspace/dist
+      - run: cp -rp attach_workspace/dist api/src/templates
+      - run: ls -la attach_workspace/templates
+      - restore_cache:
+          name: Restore Cache.
+          <<: *go_vendoring_cache_params
+      - run:
+          name: Vendoring.
+          command: |
+            if [ ! -e /go/src/github.com/howdy39/study-gae-go-circle-ci/vendor ]; then
+                go get -u github.com/golang/dep/cmd/dep
+                dep ensure -v
+            fi
+      - save_cache:
+          name: Saving Cache.
+          <<: *go_vendoring_cache_params
+      - run:
+          name: Run Server Unit Tests.
+          command: make test
+      - run:
+          name: Deploy to GAE.
+          command: |
+            if [ ${CIRCLE_BRANCH} = "demo" ]; then
+              ./scripts/deploy-ci.sh
+            else
+              echo "${CIRCLE_BRANCH} isn't deploy branch."
+            fi
 
 workflows:
   version: 2
