@@ -7,11 +7,11 @@ references:
     working_directory: /home/circleci/project
 
   node_modules_cache_params: &node_modules_cache_params
-    key: node_modules-{{ .Branch }}-{{ checksum "./client/package-lock.json" }}
+    key: node_modules-{{ .Branch }}-{{ checksum "package-lock.json" }}
     paths:
       - node_modules
 
-  server_container_config: &server_container_config
+  container_config: &container_config
     docker:
       - image: mercari/appengine-go
     environment:
@@ -24,51 +24,57 @@ references:
       - /go/src/github.com/howdy39/study-gae-go-circle-ci/vendor
 
 jobs:
-  front_build:
+  build:
     <<: *front_container_config
     steps:
       - checkout
       - run:
-          name: Show system information.
+          name: System information
           command: |
             echo "Node $(node -v)"
             echo "Npm $(npm -v)"
-      - restore_cache:
-          name: Restore Cache.
-          <<: *node_modules_cache_params
-      - run:
-          name: Set up to Angular.
-          command: npm install --no-save
-          working_directory: ./client
-      - save_cache:
-          name: Saving Cache.
-          <<: *node_modules_cache_params
-      - run:
-          name: Run Angular Build.
-          command: npm run build
-          working_directory: ./client
-      - run:
-          name: Move dist directory.
-          command: |
-            mkdir -p attach_workspace
-            cp -rp client/dist attach_workspace/dist
+      - run: echo "A first hello"
+      - run: mkdir -p my_workspace
+      - run: echo "Trying out workspaces" > my_workspace/echo-output
       - persist_to_workspace:
-          root: attach_workspace
+          # Must be an absolute path, or relative path from working_directory
+          root: my_workspace
+          # Must be relative path from root
           paths:
-            - dist
-      - run: ls -la attach_workspace
+            - echo-output
+      - run: cat my_workspace/echo-output
 
+#      - restore_cache:
+#          name: Restore Cache - node_modules
+#          <<: *node_modules_cache_params
+#          working_directory: ./client
+#      - run:
+#          name: Set up to Angular.
+#          command: npm install --no-save
+#          working_directory: ./client
+#      - save_cache:
+#          name: Saving Cache - node_modules
+#          <<: *node_modules_cache_params
+#          working_directory: ./client
+#      - run:
+#          name: Run Angular Lint.
+#          command: npm run lint
+#          working_directory: ./client
+#      - run:
+#          name: Run Angular Test.
+#          command: npm run test
+#          working_directory: ./client
+#      - run:
+#          name: Run Angular Buil.
+#          command: npm run build
+#          working_directory: ./client
 
-  server_build:
-    <<: *server_container_config
+  buildx:
+    <<: *container_config
     steps:
       - checkout
-      - run:
-          name: Show system information.
-          command: |
-            echo "Go $(go version)"
       - restore_cache:
-          name: Restore Cache.
+          name: Restore Cache - vendor
           <<: *go_vendoring_cache_params
       - run:
           name: Vendoring.
@@ -78,21 +84,11 @@ jobs:
                 dep ensure -v
             fi
       - save_cache:
-          name: Saving Cache.
+          name: Saving Cache - vendor
           <<: *go_vendoring_cache_params
       - run:
           name: Run Server Unit Tests.
           command: make test
-
-  deploy:
-    <<: *server_container_config
-    steps:
-      - checkout
-      - attach_workspace:
-          at: attach_workspace
-      - run: ls -la attach_workspace/dist
-      - run: cp -rp attach_workspace/dist api/src/templates
-      - run: ls -la api/src/templates
       - run:
           name: Deploy to GAE.
           command: |
@@ -101,14 +97,3 @@ jobs:
             else
               echo "${CIRCLE_BRANCH} isn't deploy branch."
             fi
-
-workflows:
-  version: 2
-  build:
-    jobs:
-      - front_build
-      - server_build
-      - deploy:
-          requires:
-            - front_build
-            - server_build

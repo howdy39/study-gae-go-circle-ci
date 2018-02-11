@@ -1,5 +1,8 @@
 runtime: go
 api_version: go1.8
 handlers:
-- url: /.*
-  script: _go_app
+  - url: /(.*\.(gif|png|jpg|css|js|map|eot|svg|ttf|woff|woff2|ico))$
+    static_files: templates/\1
+    upload: templates/.*\.(gif|png|jpg|css|js|map|eot|svg|ttf|woff|woff2|ico)$
+  - url: /.*
+    script: _go_app
