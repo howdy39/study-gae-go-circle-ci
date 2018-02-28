@@ -3,7 +3,7 @@ version: 2
 references:
   front_container_config: &front_container_config
     docker:
-      - image: circleci/node
+      - image: circleci/node:8.9.4-stretch-browsers
     working_directory: /home/circleci/project
 
   node_modules_cache_params: &node_modules_cache_params
@@ -43,6 +43,18 @@ jobs:
       - save_cache:
           name: Saving Cache.
           <<: *node_modules_cache_params
+      - run:
+          name: Run Lint.
+          command: npm run lint
+          working_directory: ./client
+      - run:
+          name: Run Test.
+          command: npm run test -- --single-run
+          working_directory: ./client
+      - run:
+          name: Run E2E.
+          command: npm run e2e
+          working_directory: ./client
       - run:
           name: Run Angular Build.
           command: npm run build
