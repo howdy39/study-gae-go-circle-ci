@@ -48,6 +48,10 @@ jobs:
           command: npm run lint
           working_directory: ./client
       - run:
+          name: Run Test.
+          command: npm run test -- --single-run
+          working_directory: ./client
+      - run:
           name: Run Angular Build.
           command: npm run build
           working_directory: ./client
