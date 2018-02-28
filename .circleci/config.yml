@@ -52,6 +52,10 @@ jobs:
           command: npm run test -- --single-run
           working_directory: ./client
       - run:
+          name: Run E2E.
+          command: npm run e2e
+          working_directory: ./client
+      - run:
           name: Run Angular Build.
           command: npm run build
           working_directory: ./client
